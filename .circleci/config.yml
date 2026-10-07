@@ -1,0 +1,38 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: cimg/python:3.12
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install backend dependencies
+          command: |
+            cd app/backend
+            pip install -r requirements.txt
+
+      - run:
+          name: Test backend
+          command: |
+            cd app/backend
+            python -m compileall .
+
+      - run:
+          name: Install frontend dependencies
+          command: |
+            cd app/frontend
+            pip install -r requirements.txt
+
+      - run:
+          name: Test frontend
+          command: |
+            cd app/frontend
+            python -m compileall .
+
+workflows:
+  ci:
+    jobs:
+      - test
