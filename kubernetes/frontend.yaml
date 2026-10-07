@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: todo-frontend
-          image: 806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-frontend:59b580222add0f5294bbcfd3fdcca80c56c99dde
+          image: 806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-frontend:4e78e8eb78ed7e7873f6eb3bba6a637f3df5e346
           ports:
             - containerPort: 8501
           env:
