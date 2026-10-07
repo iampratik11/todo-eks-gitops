@@ -49,6 +49,32 @@ jobs:
             docker push \
               806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-frontend:${CIRCLE_SHA1}
 
+      - run:
+          name: Update GitOps manifests
+          command: |
+            sed -i "s|todo-backend:.*|todo-backend:${CIRCLE_SHA1}|" kubernetes/backend.yaml
+            sed -i "s|todo-frontend:.*|todo-frontend:${CIRCLE_SHA1}|" kubernetes/frontend.yaml
+
+            echo "Updated image references:"
+            grep "image:" kubernetes/backend.yaml
+            grep "image:" kubernetes/frontend.yaml
+
+      - run:
+          name: Commit and push GitOps changes
+          command: |
+            git config user.name "circleci"
+            git config user.email "circleci@users.noreply.github.com"
+
+            git remote set-url origin \
+              "https://x-access-token:${GITHUB_TOKEN}@github.com/iampratik11/todo-eks-gitops.git"
+
+            git add kubernetes/backend.yaml kubernetes/frontend.yaml
+
+            git commit \
+              -m "Update application images to ${CIRCLE_SHA1}"
+
+            git push origin master
+
 workflows:
   ci:
     jobs:
