@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  test:
+  build-and-push:
     docker:
       - image: cimg/python:3.12
 
@@ -9,30 +9,59 @@ jobs:
       - checkout
 
       - run:
-          name: Install backend dependencies
+          name: Install Docker CLI
           command: |
-            cd app/backend
-            pip install -r requirements.txt
+            sudo apt-get update
+            sudo apt-get install -y docker.io
 
       - run:
-          name: Test backend
+          name: Install AWS CLI
           command: |
-            cd app/backend
-            python -m compileall .
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip -q awscliv2.zip
+            sudo ./aws/install
 
       - run:
-          name: Install frontend dependencies
+          name: Verify AWS identity
           command: |
-            cd app/frontend
-            pip install -r requirements.txt
+            aws sts get-caller-identity
 
       - run:
-          name: Test frontend
+          name: Login to Amazon ECR
           command: |
-            cd app/frontend
-            python -m compileall .
+            aws ecr get-login-password --region us-east-2 |
+              docker login \
+                --username AWS \
+                --password-stdin \
+                806997204926.dkr.ecr.us-east-2.amazonaws.com
+
+      - run:
+          name: Build backend image
+          command: |
+            docker build \
+              -t 806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-backend:${CIRCLE_SHA1} \
+              app/backend
+
+      - run:
+          name: Build frontend image
+          command: |
+            docker build \
+              -t 806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-frontend:${CIRCLE_SHA1} \
+              app/frontend
+
+      - run:
+          name: Push backend image
+          command: |
+            docker push \
+              806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-backend:${CIRCLE_SHA1}
+
+      - run:
+          name: Push frontend image
+          command: |
+            docker push \
+              806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-frontend:${CIRCLE_SHA1}
 
 workflows:
   ci:
     jobs:
-      - test
+      - build-and-push
