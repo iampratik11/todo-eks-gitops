@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-frontend
+  namespace: default
+  labels:
+    app: todo-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-frontend
+  template:
+    metadata:
+      labels:
+        app: todo-frontend
+    spec:
+      containers:
+        - name: todo-frontend
+          image: 806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-frontend:1.0
+          ports:
+            - containerPort: 8501
+          env:
+            - name: API_URL
+              value: "http://todo-backend:8000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-frontend
+  namespace: default
+spec:
+  selector:
+    app: todo-frontend
+  ports:
+    - protocol: TCP
+      port: 8501
+      targetPort: 8501
+  type: LoadBalancer

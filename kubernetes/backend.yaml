@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-backend
+  namespace: default
+  labels:
+    app: todo-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-backend
+  template:
+    metadata:
+      labels:
+        app: todo-backend
+    spec:
+      serviceAccountName: todo-backend
+      containers:
+        - name: todo-backend
+          image: 806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-backend:1.0
+          ports:
+            - containerPort: 8000
+          env:
+            - name: AWS_REGION
+              value: "us-east-2"
+            - name: DYNAMODB_TABLE
+              value: "todo-app-todos"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-backend
+  namespace: default
+spec:
+  selector:
+    app: todo-backend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
