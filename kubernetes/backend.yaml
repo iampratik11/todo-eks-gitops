@@ -18,7 +18,7 @@ spec:
       serviceAccountName: todo-backend
       containers:
         - name: todo-backend
-          image: 806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-backend:5ac65f8a4856765120e56f1f8813fcf25f02ef86
+          image: 806997204926.dkr.ecr.us-east-2.amazonaws.com/todo-backend:ad20f720e032bb0275fa2e9e0af2954c1b619801
           ports:
             - containerPort: 8000
           env:
