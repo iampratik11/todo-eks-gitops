@@ -2,22 +2,16 @@ version: 2.1
 
 jobs:
   build-and-push:
-    docker:
-      - image: cimg/python:3.12
+    machine:
+      image: ubuntu-2204:current
 
     steps:
       - checkout
 
       - run:
-          name: Install Docker CLI
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y docker.io
-
-      - run:
           name: Install AWS CLI
           command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip
             unzip -q awscliv2.zip
             sudo ./aws/install
 
