@@ -8,6 +8,9 @@
 ![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
 
+<img width="1600" height="920" alt="image" src="https://github.com/user-attachments/assets/8a3e6edd-2d67-4454-9914-8a1d0afc784c" />
+
+
 A production-style **GitOps** project that deploys a full-stack Todo application to **Amazon EKS**. A `git push` triggers **CircleCI** to build and push Docker images to **Amazon ECR** and update the Kubernetes manifests, and **ArgoCD** then syncs the change to the cluster automatically. No manual `kubectl apply` is needed after the initial setup.
 
 ---
